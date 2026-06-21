@@ -6,13 +6,13 @@ Repositorio independiente del sitio de análisis. Contiene la propuesta técnica
 
 - `index.html` — sitio web interactivo de la propuesta
 - `styles.css` — diseño (incluye `@font-face` para las fuentes locales — no depende de Google Fonts)
-- `fonts/` — Space Grotesk, IBM Plex Sans, IBM Plex Mono (embebidas localmente)
+- `SpaceGrotesk.ttf`, `IBMPlexSans.ttf`, `IBMPlexMono-*.ttf` — fuentes embebidas, deben estar en la misma carpeta que `index.html` y `styles.css` (raíz del repo)
 - `Keno-Shopy-Propuesta-Tecnica.pdf` — versión descargable, generada a partir del mismo HTML/CSS
 - `print.css` — ajustes de paginación usados solo para generar el PDF (no se carga en el sitio web público)
 
 ## Publicar en GitHub Pages
 
-1. Sube **todo el contenido de esta carpeta tal cual está** (incluyendo la carpeta `fonts/` completa y el PDF) a un repositorio nuevo.
+1. Sube **todo el contenido de esta carpeta tal cual está** (incluyendo todos los archivos `.ttf` y el PDF) a un repositorio nuevo, todos en la misma carpeta raíz.
 2. En GitHub: **Settings → Pages → Source** → selecciona la rama y carpeta raíz.
 3. La URL pública queda como `https://<usuario-u-org>.github.io/<repo>/`.
 
