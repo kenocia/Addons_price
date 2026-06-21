@@ -222,11 +222,34 @@ main { position: relative; z-index: 1; }
 .option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
 .option-card {
+  display: block;
+  position: relative;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+  cursor: pointer;
   border-radius: var(--radius); padding: 28px 24px;
   background: var(--bg-panel); border: 1px solid var(--line);
+  transition: opacity 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 .option-a { border-color: var(--a-dim); }
 .option-b { border-color: var(--b-dim); background: linear-gradient(160deg, var(--b-glow), transparent 55%), var(--bg-panel); }
+
+.option-card.is-selected { opacity: 1; transform: scale(1); }
+.option-a.is-selected { border-color: var(--a-color); }
+.option-b.is-selected { border-color: var(--b-color); }
+.option-card:not(.is-selected) { opacity: 0.55; }
+.option-card:not(.is-selected):hover { opacity: 0.8; }
+
+.option-select-badge {
+  position: absolute; top: 24px; right: 24px;
+  font-family: var(--font-mono); font-size: 11px;
+  opacity: 0; transition: opacity 0.2s ease;
+}
+.option-a .option-select-badge { color: var(--a-color); }
+.option-b .option-select-badge { color: var(--b-color); }
+.option-card.is-selected .option-select-badge { opacity: 1; }
 
 .option-label {
   display: inline-block; font-family: var(--font-mono); font-size: 11.5px;

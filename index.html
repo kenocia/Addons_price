@@ -18,8 +18,8 @@
       <span class="brand-sep">/</span>
       <span class="brand-doc">Propuesta Técnica</span>
     </div>
-    <a href="Keno-Shopy-Propuesta-Tecnica.pdf" class="download-btn" download>
-      <span class="download-icon">↓</span> Descargar PDF
+    <a href="Keno-Shopy-Propuesta-Tecnica-OpcionA.pdf" class="download-btn" id="download-btn" download>
+      <span class="download-icon">↓</span> Descargar PDF — Opción A
     </a>
   </div>
 </header>
@@ -136,7 +136,8 @@
     </p>
 
     <div class="option-grid">
-      <article class="option-card option-a">
+      <button type="button" class="option-card option-a is-selected" data-option="a">
+        <span class="option-select-badge">✓ Seleccionada</span>
         <span class="option-label">Opción A</span>
         <h3>Color como atributo del producto padre</h3>
         <p class="option-spec"><span class="mono">Clave de agrupación = U_ARGNS_MOD + U_ARGNS_COL</span></p>
@@ -153,9 +154,10 @@
           <span class="option-footer-label">Esfuerzo de implementación</span>
           <span class="option-footer-value">34 horas / 5 días hábiles</span>
         </div>
-      </article>
+      </button>
 
-      <article class="option-card option-b">
+      <button type="button" class="option-card option-b" data-option="b">
+        <span class="option-select-badge">✓ Seleccionada</span>
         <span class="option-label">Opción B</span>
         <h3>Color como variante de Shopify</h3>
         <p class="option-spec"><span class="mono">Clave de agrupación = U_ARGNS_MOD (Modelo únicamente)</span></p>
@@ -173,7 +175,7 @@
           <span class="option-footer-label">Esfuerzo de implementación</span>
           <span class="option-footer-value">51 horas / ~11 días hábiles</span>
         </div>
-      </article>
+      </button>
     </div>
   </section>
 
@@ -182,7 +184,7 @@
     <p class="section-num">04</p>
     <h2>Cronograma por opción</h2>
 
-    <div class="gantt-block">
+    <div class="gantt-block" data-option-block="a">
       <h4 class="gantt-block-title gantt-title-a">Opción A — 5 días hábiles</h4>
       <div class="gantt-static">
         <div class="gantt-static-row"><span class="gantt-static-label">SAP B1</span><span class="gantt-static-task">UDF Descripción Padre</span><div class="gantt-static-track"><div class="gantt-static-bar bar-a" style="left:0%;width:20%;"></div></div></div>
@@ -193,7 +195,7 @@
       </div>
     </div>
 
-    <div class="gantt-block">
+    <div class="gantt-block" data-option-block="b">
       <h4 class="gantt-block-title gantt-title-b">Opción B — 11 días hábiles</h4>
       <div class="gantt-static">
         <div class="gantt-static-row"><span class="gantt-static-label">SAP B1</span><span class="gantt-static-task">UDF Descripción Padre</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:0%;width:18%;"></div></div></div>
@@ -243,7 +245,7 @@
         <p class="invest-desc">Mantenimiento operativo del addon — monitoreo de sincronización SAP↔Shopify. No incluye mejoras de alcance; toda personalización se cotiza por separado.</p>
       </div>
 
-      <div class="invest-card invest-card-a">
+      <div class="invest-card invest-card-a" data-option-block="a">
         <span class="invest-tag invest-tag-a">Implementación — Opción A</span>
         <table class="invest-table">
           <tr><td>Análisis y diseño</td><td class="num">4h</td><td class="num">$120</td></tr>
@@ -254,7 +256,7 @@
         </table>
       </div>
 
-      <div class="invest-card invest-card-b">
+      <div class="invest-card invest-card-b" data-option-block="b">
         <span class="invest-tag invest-tag-b">Implementación — Opción B</span>
         <table class="invest-table">
           <tr><td>Análisis y diseño</td><td class="num">4h</td><td class="num">$120</td></tr>
@@ -294,5 +296,6 @@
   </div>
 </footer>
 
+<script src="script.js"></script>
 </body>
 </html>
