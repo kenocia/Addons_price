@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keno-Shopy · Propuesta Técnica — Integración SAP B1 ↔ Shopify</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="bg-grid" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="brand-mark">KS</span>
+      <span class="brand-text">Keno&#8209;Shopy</span>
+      <span class="brand-sep">/</span>
+      <span class="brand-doc">Propuesta Técnica</span>
+    </div>
+    <a href="Keno-Shopy-Propuesta-Tecnica.pdf" class="download-btn" download>
+      <span class="download-icon">↓</span> Descargar PDF
+    </a>
+  </div>
+</header>
+
+<main>
+
+  <!-- PORTADA -->
+  <section class="cover">
+    <div class="cover-inner">
+      <p class="cover-eyebrow">Propuesta técnica &amp; comercial</p>
+      <h1>Integración SAP Business One ↔ Shopify</h1>
+      <p class="cover-sub">Sincronización de catálogo, inventario y precios — módulo Keno&#8209;Shopy</p>
+
+      <div class="cover-meta">
+        <div class="cover-meta-row">
+          <span class="cover-meta-label">Para</span>
+          <span class="cover-meta-value">Amado Rodriguez — Lumo</span>
+        </div>
+        <div class="cover-meta-row">
+          <span class="cover-meta-label">Cliente final</span>
+          <span class="cover-meta-value">Van Heusen de C.A.</span>
+        </div>
+        <div class="cover-meta-row">
+          <span class="cover-meta-label">Preparado por</span>
+          <span class="cover-meta-value">Lumo by Kenocia</span>
+        </div>
+        <div class="cover-meta-row">
+          <span class="cover-meta-label">Fecha</span>
+          <span class="cover-meta-value">Junio 2026</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESUMEN EJECUTIVO -->
+  <section class="section" id="resumen">
+    <p class="section-num">01</p>
+    <h2>Resumen ejecutivo</h2>
+    <p class="lead">
+      El módulo Keno&#8209;Shopy sincroniza catálogo, stock e imágenes entre SAP Business&nbsp;One
+      y Shopify para Van Heusen de C.A. La integración actual trata cada combinación
+      Modelo&#8209;Color&#8209;Talla como una entidad plana, lo que produce productos duplicados
+      en la tienda y registros sin agregación de inventario. Esta propuesta cubre el rediseño
+      de la estructura de datos hacia el modelo nativo de Shopify (producto padre / variante)
+      y presenta dos alcances técnicos posibles, con su respectivo cronograma e inversión.
+    </p>
+    <div class="stack-row">
+      <div class="stack-chip"><span class="stack-label">ERP</span>SAP Business One · Service Layer (REST/OData)</div>
+      <div class="stack-chip"><span class="stack-label">eCommerce</span>Shopify Admin API · GraphQL + REST</div>
+      <div class="stack-chip"><span class="stack-label">Activos</span>Amazon S3</div>
+    </div>
+  </section>
+
+  <!-- ALCANCE TÉCNICO -->
+  <section class="section" id="alcance">
+    <p class="section-num">02</p>
+    <h2>Alcance técnico</h2>
+    <p class="lead">
+      El addon opera sobre tres procesos diferenciados, cada uno con su propia clave de
+      lectura contra SAP B1:
+    </p>
+
+    <div class="tech-process">
+      <div class="tech-process-num">01</div>
+      <div>
+        <h4>Escritura de producto padre + variantes → Shopify</h4>
+        <p>
+          Resuelve disponible real por <span class="mono">ItemCode</span> antes de invocar
+          <span class="mono">productVariantsBulkCreate</span> (GraphQL) o el endpoint REST
+          equivalente, según el tipo de operación:
+        </p>
+        <div class="code-block">Disponible = OITW.OnHand − OITW.IsCommited  (WhsCode = 'A01')</div>
+      </div>
+    </div>
+
+    <div class="tech-process">
+      <div class="tech-process-num">02</div>
+      <div>
+        <h4>Lectura de SKU, precio y stock</h4>
+        <p>
+          Lookup por <span class="mono">ItemCode</span> vía Service Layer contra
+          <span class="mono">OITM</span> (maestro), <span class="mono">ITM1</span>
+          (Lista de Precios&nbsp;02) y <span class="mono">OITW</span> (stock por almacén).
+        </p>
+      </div>
+    </div>
+
+    <div class="tech-process">
+      <div class="tech-process-num">03</div>
+      <div>
+        <h4>Resolución de imágenes — Amazon S3</h4>
+        <p>
+          Búsqueda por prefijo de objeto en el bucket, agrupada por la misma clave que
+          agrupa al producto padre (ver sección&nbsp;03).
+        </p>
+      </div>
+    </div>
+
+    <div class="principle-block">
+      <span class="principle-label">Principio de integridad referencial</span>
+      <p>El SKU en Shopify debe ser idéntico al <span class="mono">ItemCode</span> de SAP, carácter por carácter — sin sufijos autogenerados por Shopify ni por el addon. El cruce entre ambos sistemas se resuelve por igualdad directa de campo, sin tabla de traducción intermedia a nivel de variante.</p>
+    </div>
+  </section>
+
+  <!-- OPCIONES A / B -->
+  <section class="section" id="opciones">
+    <p class="section-num">03</p>
+    <h2>Decisión de arquitectura: tratamiento del color</h2>
+    <p class="lead">
+      SAP B1 no modela un "producto padre" — cada combinación Modelo&#8209;Color&#8209;Talla es un
+      <span class="mono">ItemCode</span> plano en <span class="mono">OITM</span>. Shopify exige
+      esa jerarquía. Existen dos formas válidas de resolverla, con distinto costo de desarrollo
+      y experiencia de cliente final.
+    </p>
+
+    <div class="option-grid">
+      <article class="option-card option-a">
+        <span class="option-label">Opción A</span>
+        <h3>Color como atributo del producto padre</h3>
+        <p class="option-spec"><span class="mono">Clave de agrupación = U_ARGNS_MOD + U_ARGNS_COL</span></p>
+        <ul class="option-list">
+          <li>Cada combinación Modelo+Color es un producto Shopify independiente.</li>
+          <li>Opción de variante expuesta: <strong>Talla únicamente</strong>.</li>
+          <li>Resolución de imágenes S3 por prefijo <span class="mono">Modelo+Color</span>.</li>
+          <li>Sin dependencia de tablas maestras adicionales en SAP.</li>
+        </ul>
+        <div class="option-tradeoff">
+          <strong>Limitación funcional:</strong> "Navy" y "Blanco" del mismo modelo aparecen como fichas de producto separadas en el storefront, no como variantes de color dentro de una sola ficha.
+        </div>
+        <div class="option-footer">
+          <span class="option-footer-label">Esfuerzo de implementación</span>
+          <span class="option-footer-value">34 horas / 5 días hábiles</span>
+        </div>
+      </article>
+
+      <article class="option-card option-b">
+        <span class="option-label">Opción B</span>
+        <h3>Color como variante de Shopify</h3>
+        <p class="option-spec"><span class="mono">Clave de agrupación = U_ARGNS_MOD (Modelo únicamente)</span></p>
+        <ul class="option-list">
+          <li>Un producto Shopify por Modelo, con Color y Talla como opciones combinadas.</li>
+          <li>Resolución de imágenes S3 por prefijo de solo <span class="mono">Modelo</span>.</li>
+          <li>Requiere lookup en vivo contra UDT de colores existente en SAP (campo código→nombre comercial, ej. <span class="mono">730 → Navy</span>), ejecutado dentro del Proceso&nbsp;2.</li>
+          <li>Degradación definida: si el código no tiene traducción en la UDT, la variante se sincroniza sin Color como opción visible.</li>
+          <li>Incluye migración de productos ya creados bajo el esquema de la Opción A.</li>
+        </ul>
+        <div class="option-tradeoff option-tradeoff-good">
+          <strong>Ventaja funcional:</strong> experiencia de compra estándar de eCommerce — selector de color y talla dentro de una sola ficha de producto.
+        </div>
+        <div class="option-footer">
+          <span class="option-footer-label">Esfuerzo de implementación</span>
+          <span class="option-footer-value">51 horas / ~11 días hábiles</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- CRONOGRAMA -->
+  <section class="section" id="cronograma">
+    <p class="section-num">04</p>
+    <h2>Cronograma por opción</h2>
+
+    <div class="gantt-block">
+      <h4 class="gantt-block-title gantt-title-a">Opción A — 5 días hábiles</h4>
+      <div class="gantt-static">
+        <div class="gantt-static-row"><span class="gantt-static-label">SAP B1</span><span class="gantt-static-task">UDF Descripción Padre</span><div class="gantt-static-track"><div class="gantt-static-bar bar-a" style="left:0%;width:20%;"></div></div></div>
+        <div class="gantt-static-row"><span class="gantt-static-label">Addon</span><span class="gantt-static-task">Agrupación Modelo+Color</span><div class="gantt-static-track"><div class="gantt-static-bar bar-a" style="left:0%;width:40%;"></div></div></div>
+        <div class="gantt-static-row"><span class="gantt-static-label">Addon</span><span class="gantt-static-task">Proceso 1 · padre+variantes</span><div class="gantt-static-track"><div class="gantt-static-bar bar-a" style="left:20%;width:40%;"></div></div></div>
+        <div class="gantt-static-row"><span class="gantt-static-label">Addon</span><span class="gantt-static-task">Proceso 3 · imágenes S3</span><div class="gantt-static-track"><div class="gantt-static-bar bar-a" style="left:40%;width:40%;"></div></div></div>
+        <div class="gantt-static-row"><span class="gantt-static-label">QA</span><span class="gantt-static-task">Pruebas E2E</span><div class="gantt-static-track"><div class="gantt-static-bar bar-a" style="left:80%;width:20%;"></div></div></div>
+      </div>
+    </div>
+
+    <div class="gantt-block">
+      <h4 class="gantt-block-title gantt-title-b">Opción B — 11 días hábiles</h4>
+      <div class="gantt-static">
+        <div class="gantt-static-row"><span class="gantt-static-label">SAP B1</span><span class="gantt-static-task">UDF Descripción Padre</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:0%;width:18%;"></div></div></div>
+        <div class="gantt-static-row"><span class="gantt-static-label">SAP B1</span><span class="gantt-static-task">Validar UDT colores</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:0%;width:9%;"></div></div></div>
+        <div class="gantt-static-row"><span class="gantt-static-label">Addon</span><span class="gantt-static-task">Rediseño agrupación</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:0%;width:27%;"></div></div></div>
+        <div class="gantt-static-row"><span class="gantt-static-label">Addon</span><span class="gantt-static-task">Lookup UDT colores</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:9%;width:18%;"></div></div></div>
+        <div class="gantt-static-row"><span class="gantt-static-label">Addon</span><span class="gantt-static-task">Proceso 1 · 2 niveles variante</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:18%;width:27%;"></div></div></div>
+        <div class="gantt-static-row"><span class="gantt-static-label">Addon</span><span class="gantt-static-task">Proceso 3 · imágenes por Modelo</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:45%;width:18%;"></div></div></div>
+        <div class="gantt-static-row"><span class="gantt-static-label">Addon</span><span class="gantt-static-task">Migración esquema anterior</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:63%;width:18%;"></div></div></div>
+        <div class="gantt-static-row"><span class="gantt-static-label">QA</span><span class="gantt-static-task">Pruebas E2E</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:81%;width:19%;"></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EQUIPO -->
+  <section class="section" id="equipo">
+    <p class="section-num">05</p>
+    <h2>Equipo asignado</h2>
+    <div class="team-grid">
+      <div class="team-card">
+        <span class="team-role-tag">Analista Funcional SAP</span>
+        <h4>Jorge Urbina</h4>
+        <p>Levantamiento de requerimientos, especificación de UDFs/UDT, validación de reglas de negocio contra SAP B1 y coordinación con Van Heusen.</p>
+      </div>
+      <div class="team-card">
+        <span class="team-role-tag">Desarrollador SAP / Addon</span>
+        <h4>Jefree Gómez</h4>
+        <p>Implementación de los tres procesos del addon, integración con SAP Service Layer, lógica de agrupación y anti-duplicados, payloads hacia Shopify.</p>
+      </div>
+      <div class="team-card">
+        <span class="team-role-tag">Arquitecto Web &amp; Controladores</span>
+        <h4>Gilberto Salguero</h4>
+        <p>Arquitectura de integración con Shopify Admin API (GraphQL/REST), controladores de sincronización, resolución de assets en Amazon S3.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- INVERSIÓN -->
+  <section class="section" id="inversion">
+    <p class="section-num">06</p>
+    <h2>Inversión</h2>
+
+    <div class="invest-grid">
+      <div class="invest-card invest-card-recurring">
+        <span class="invest-tag">Recurrencia mensual</span>
+        <p class="invest-amount">$90<span class="invest-unit">/mes</span></p>
+        <p class="invest-desc">Mantenimiento operativo del addon — monitoreo de sincronización SAP↔Shopify. No incluye mejoras de alcance; toda personalización se cotiza por separado.</p>
+      </div>
+
+      <div class="invest-card invest-card-a">
+        <span class="invest-tag invest-tag-a">Implementación — Opción A</span>
+        <table class="invest-table">
+          <tr><td>Análisis y diseño</td><td class="num">4h</td><td class="num">$120</td></tr>
+          <tr><td>Integración SAP B1 (Service Layer)</td><td class="num">10h</td><td class="num">$300</td></tr>
+          <tr><td>Resolución de imágenes S3</td><td class="num">5h</td><td class="num">$150</td></tr>
+          <tr><td>Estructura padre/variante (color en padre)</td><td class="num">15h</td><td class="num">$450</td></tr>
+          <tr class="total-row"><td>Total</td><td class="num">34h</td><td class="num">$1,020</td></tr>
+        </table>
+      </div>
+
+      <div class="invest-card invest-card-b">
+        <span class="invest-tag invest-tag-b">Implementación — Opción B</span>
+        <table class="invest-table">
+          <tr><td>Análisis y diseño</td><td class="num">4h</td><td class="num">$120</td></tr>
+          <tr><td>Integración SAP B1 (Service Layer)</td><td class="num">10h</td><td class="num">$300</td></tr>
+          <tr><td>Resolución de imágenes S3 (base)</td><td class="num">5h</td><td class="num">$150</td></tr>
+          <tr><td>Estructura padre/variante + lookup color</td><td class="num">28h</td><td class="num">$840</td></tr>
+          <tr><td>Migración de productos existentes</td><td class="num">4h</td><td class="num">$120</td></tr>
+          <tr class="total-row"><td>Total</td><td class="num">51h</td><td class="num">$1,530</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="rate-note">
+      <span class="rate-note-icon">$</span>
+      <p>Tarifa aplicada: <strong>$30/hora</strong>. Tarifa preferencial sobre el estándar de Kenocia ($35/hora), vigente para Lumo por el volumen acumulado de proyectos en conjunto.</p>
+    </div>
+  </section>
+
+  <!-- TÉRMINOS -->
+  <section class="section" id="terminos">
+    <p class="section-num">07</p>
+    <h2>Términos de la propuesta</h2>
+    <ul class="terms-list">
+      <li>Vigencia de esta cotización: 30 días naturales a partir de la fecha de emisión.</li>
+      <li>El esfuerzo en horas es estimado sobre el alcance descrito; cualquier requerimiento adicional no contemplado aquí se cotiza por separado.</li>
+      <li>La recurrencia mensual inicia una vez el addon esté en producción, independientemente de la opción elegida.</li>
+      <li>Pendientes técnicos abiertos (ver documento de análisis funcional) deben resolverse con Van Heusen antes del inicio de desarrollo, sin impacto en el cronograma cotizado si se resuelven dentro de los primeros 2 días hábiles.</li>
+    </ul>
+  </section>
+
+</main>
+
+<footer class="quote-footer">
+  <div class="quote-footer-inner">
+    <span>Lumo by Kenocia</span>
+    <span class="mono">consultoria@kenocia.com · +504 3281-4320</span>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+@page {
+  size: Letter;
+  margin: 18mm 16mm;
+  background: #0C0E10;
+}
+
+body {
+  background: #0C0E10 !important;
+}
+
+.bg-grid { display: none; }
+
+.cover { padding: 10px 0 40px; border-bottom: 1px solid #2A2F33; page-break-after: always; }
+.cover-meta { grid-template-columns: 1fr 1fr; }
+
+.section {
+  padding: 28px 0;
+  border-bottom: 1px solid #2A2F33;
+}
+
+.option-grid { grid-template-columns: 1fr 1fr; }
+.option-card { break-inside: avoid; }
+
+.team-grid { grid-template-columns: repeat(3, 1fr); }
+.team-card { break-inside: avoid; }
+
+.tech-process { break-inside: avoid; }
+.gantt-block { break-inside: avoid; }
+.invest-card { break-inside: avoid; }
+.rate-note { break-inside: avoid; }
+#inversion { break-inside: auto; }
+
+.quote-footer { display: none; }
+
+h2, h3, h4 { break-after: avoid; }
