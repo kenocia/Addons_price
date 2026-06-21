@@ -227,12 +227,13 @@ main { position: relative; z-index: 1; }
   width: 100%;
   text-align: left;
   font-family: inherit;
-  color: inherit;
+  color: var(--text-hi);
   cursor: pointer;
   border-radius: var(--radius); padding: 28px 24px;
   background: var(--bg-panel); border: 1px solid var(--line);
   transition: opacity 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
+.option-card * { color: inherit; }
 .option-a { border-color: var(--a-dim); }
 .option-b { border-color: var(--b-dim); background: linear-gradient(160deg, var(--b-glow), transparent 55%), var(--bg-panel); }
 
@@ -242,21 +243,31 @@ main { position: relative; z-index: 1; }
 .option-card:not(.is-selected) { opacity: 0.55; }
 .option-card:not(.is-selected):hover { opacity: 0.8; }
 
+.option-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
 .option-select-badge {
-  position: absolute; top: 24px; right: 24px;
   font-family: var(--font-mono); font-size: 11px;
   opacity: 0; transition: opacity 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-top: 5px;
 }
-.option-a .option-select-badge { color: var(--a-color); }
-.option-b .option-select-badge { color: var(--b-color); }
+.option-a .option-select-badge { color: var(--a-color) !important; }
+.option-b .option-select-badge { color: var(--b-color) !important; }
 .option-card.is-selected .option-select-badge { opacity: 1; }
 
 .option-label {
   display: inline-block; font-family: var(--font-mono); font-size: 11.5px;
   padding: 4px 10px; border-radius: 100px; letter-spacing: 0.02em;
 }
-.option-a .option-label { background: var(--a-glow); color: var(--a-color); }
-.option-b .option-label { background: var(--b-glow); color: var(--b-color); }
+.option-a .option-label { background: var(--a-glow); color: var(--a-color) !important; }
+.option-b .option-label { background: var(--b-glow); color: var(--b-color) !important; }
 
 .option-card h3 { font-family: var(--font-display); font-size: 19px; margin: 14px 0 8px; }
 .option-spec { font-size: 12.5px; color: var(--text-low); margin: 0 0 16px; }
@@ -359,6 +370,25 @@ main { position: relative; z-index: 1; }
 .invest-table td.num { text-align: right; font-family: var(--font-mono); white-space: nowrap; }
 .invest-table tr:last-child td { border-bottom: none; }
 .invest-table tr.total-row td { color: var(--text-hi); font-weight: 600; border-top: 1px solid var(--line); padding-top: 14px; }
+
+.invest-table td.status {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-align: right;
+  white-space: nowrap;
+  padding-right: 14px;
+}
+.status-done { color: var(--a-color); }
+.status-pending { color: var(--text-low); }
+
+.invest-progress {
+  margin: 14px 0 0;
+  font-size: 12.5px;
+  color: var(--text-low);
+  font-family: var(--font-mono);
+  border-top: 1px solid var(--line-soft);
+  padding-top: 12px;
+}
 .invest-card-a .total-row td.num:last-child { color: var(--a-color); }
 .invest-card-b .total-row td.num:last-child { color: var(--b-color); }
 

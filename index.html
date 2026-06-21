@@ -137,8 +137,10 @@
 
     <div class="option-grid">
       <button type="button" class="option-card option-a is-selected" data-option="a">
-        <span class="option-select-badge">✓ Seleccionada</span>
-        <span class="option-label">Opción A</span>
+        <div class="option-card-head">
+          <span class="option-label">Opción A</span>
+          <span class="option-select-badge">✓ Seleccionada</span>
+        </div>
         <h3>Color como atributo del producto padre</h3>
         <p class="option-spec"><span class="mono">Clave de agrupación = U_ARGNS_MOD + U_ARGNS_COL</span></p>
         <ul class="option-list">
@@ -157,8 +159,10 @@
       </button>
 
       <button type="button" class="option-card option-b" data-option="b">
-        <span class="option-select-badge">✓ Seleccionada</span>
-        <span class="option-label">Opción B</span>
+        <div class="option-card-head">
+          <span class="option-label">Opción B</span>
+          <span class="option-select-badge">✓ Seleccionada</span>
+        </div>
         <h3>Color como variante de Shopify</h3>
         <p class="option-spec"><span class="mono">Clave de agrupación = U_ARGNS_MOD (Modelo únicamente)</span></p>
         <ul class="option-list">
@@ -248,24 +252,26 @@
       <div class="invest-card invest-card-a" data-option-block="a">
         <span class="invest-tag invest-tag-a">Implementación — Opción A</span>
         <table class="invest-table">
-          <tr><td>Análisis y diseño</td><td class="num">4h</td><td class="num">$120</td></tr>
-          <tr><td>Integración SAP B1 (Service Layer)</td><td class="num">10h</td><td class="num">$300</td></tr>
-          <tr><td>Resolución de imágenes S3</td><td class="num">5h</td><td class="num">$150</td></tr>
-          <tr><td>Estructura padre/variante (color en padre)</td><td class="num">15h</td><td class="num">$450</td></tr>
-          <tr class="total-row"><td>Total</td><td class="num">34h</td><td class="num">$1,020</td></tr>
+          <tr><td>Análisis y diseño</td><td class="status status-done">✓ Hecho</td><td class="num">4h</td><td class="num">$120</td></tr>
+          <tr><td>Integración SAP B1 (Service Layer)</td><td class="status status-done">✓ Hecho</td><td class="num">10h</td><td class="num">$300</td></tr>
+          <tr><td>Resolución de imágenes S3</td><td class="status status-done">✓ Hecho</td><td class="num">5h</td><td class="num">$150</td></tr>
+          <tr><td>Estructura padre/variante (color en padre)</td><td class="status status-pending">Pendiente</td><td class="num">15h</td><td class="num">$450</td></tr>
+          <tr class="total-row"><td>Total</td><td></td><td class="num">34h</td><td class="num">$1,020</td></tr>
         </table>
+        <p class="invest-progress">19h ya ejecutadas ($570) · 15h pendientes ($450)</p>
       </div>
 
       <div class="invest-card invest-card-b" data-option-block="b">
         <span class="invest-tag invest-tag-b">Implementación — Opción B</span>
         <table class="invest-table">
-          <tr><td>Análisis y diseño</td><td class="num">4h</td><td class="num">$120</td></tr>
-          <tr><td>Integración SAP B1 (Service Layer)</td><td class="num">10h</td><td class="num">$300</td></tr>
-          <tr><td>Resolución de imágenes S3 (base)</td><td class="num">5h</td><td class="num">$150</td></tr>
-          <tr><td>Estructura padre/variante + lookup color</td><td class="num">28h</td><td class="num">$840</td></tr>
-          <tr><td>Migración de productos existentes</td><td class="num">4h</td><td class="num">$120</td></tr>
-          <tr class="total-row"><td>Total</td><td class="num">51h</td><td class="num">$1,530</td></tr>
+          <tr><td>Análisis y diseño</td><td class="status status-done">✓ Hecho</td><td class="num">4h</td><td class="num">$120</td></tr>
+          <tr><td>Integración SAP B1 (Service Layer)</td><td class="status status-done">✓ Hecho</td><td class="num">10h</td><td class="num">$300</td></tr>
+          <tr><td>Resolución de imágenes S3 (base)</td><td class="status status-done">✓ Hecho</td><td class="num">5h</td><td class="num">$150</td></tr>
+          <tr><td>Estructura padre/variante + lookup color</td><td class="status status-pending">Pendiente</td><td class="num">28h</td><td class="num">$840</td></tr>
+          <tr><td>Migración de productos existentes</td><td class="status status-pending">Pendiente</td><td class="num">4h</td><td class="num">$120</td></tr>
+          <tr class="total-row"><td>Total</td><td></td><td class="num">51h</td><td class="num">$1,530</td></tr>
         </table>
+        <p class="invest-progress">19h ya ejecutadas ($570) · 32h pendientes ($960)</p>
       </div>
     </div>
 
