@@ -35,16 +35,8 @@ body {
 h2, h3, h4 { break-after: avoid; }
 
 /* ============================================================
-   PDF de una sola opción: ocultar todo lo que no corresponda
-   al data-option forzado en <html> (a o b)
+   Tarjeta de alcance único: ancho completo, sin truncar
    ============================================================ */
 .option-grid { display: block; max-width: 100%; }
-.option-card { width: 100%; max-width: 100%; box-sizing: border-box; break-inside: auto; }
+.option-card { width: 100%; max-width: 100%; box-sizing: border-box; break-inside: auto; opacity: 1 !important; }
 .option-list li, .option-tradeoff, .option-footer { break-inside: avoid; }
-html[data-option="a"] [data-option-block="b"],
-html[data-option="a"] .option-card.option-b { display: none !important; }
-html[data-option="b"] [data-option-block="a"],
-html[data-option="b"] .option-card.option-a { display: none !important; }
-
-.option-select-badge { display: none; }
-.option-card { opacity: 1 !important; }

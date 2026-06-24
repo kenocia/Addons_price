@@ -18,8 +18,8 @@
       <span class="brand-sep">/</span>
       <span class="brand-doc">Propuesta Técnica</span>
     </div>
-    <a href="Keno-Shopy-Propuesta-Tecnica-OpcionA.pdf" class="download-btn" id="download-btn" download>
-      <span class="download-icon">↓</span> Descargar PDF — Opción A
+    <a href="Keno-Shopy-Propuesta-Tecnica.pdf" class="download-btn" download>
+      <span class="download-icon">↓</span> Descargar PDF
     </a>
   </div>
 </header>
@@ -63,8 +63,8 @@
       y Shopify para Van Heusen de C.A. La integración actual trata cada combinación
       Modelo&#8209;Color&#8209;Talla como una entidad plana, lo que produce productos duplicados
       en la tienda y registros sin agregación de inventario. Esta propuesta cubre el rediseño
-      de la estructura de datos hacia el modelo nativo de Shopify (producto padre / variante)
-      y presenta dos alcances técnicos posibles, con su respectivo cronograma e inversión.
+      completo de la estructura de datos hacia el modelo nativo de Shopify (producto padre /
+      variante), con color y talla como variantes reales del mismo producto.
     </p>
     <div class="stack-row">
       <div class="stack-chip"><span class="stack-label">ERP</span>SAP Business One · Service Layer (REST/OData)</div>
@@ -124,44 +124,22 @@
     </div>
   </section>
 
-  <!-- OPCIONES A / B -->
+  <!-- ALCANCE DE LA SOLUCIÓN -->
   <section class="section" id="opciones">
     <p class="section-num">03</p>
-    <h2>Decisión de arquitectura: tratamiento del color</h2>
+    <h2>Color y Talla, ambas como variantes reales</h2>
     <p class="lead">
       SAP B1 no modela un "producto padre" — cada combinación Modelo&#8209;Color&#8209;Talla es un
-      <span class="mono">ItemCode</span> plano en <span class="mono">OITM</span>. Shopify exige
-      esa jerarquía. Existen dos formas válidas de resolverla, con distinto costo de desarrollo
-      y experiencia de cliente final.
+      <span class="mono">ItemCode</span> plano en <span class="mono">OITM</span>. Esta propuesta
+      construye esa jerarquía en Shopify: un producto por Modelo, con Color y Talla como
+      opciones combinadas de una sola ficha — la experiencia estándar de cualquier tienda
+      de eCommerce.
     </p>
 
     <div class="option-grid">
-      <button type="button" class="option-card option-a is-selected" data-option="a">
+      <div class="option-card option-b is-selected">
         <div class="option-card-head">
-          <span class="option-label">Opción A</span>
-          <span class="option-select-badge">✓ Seleccionada</span>
-        </div>
-        <h3>Color como atributo del producto padre</h3>
-        <p class="option-spec"><span class="mono">Clave de agrupación = U_ARGNS_MOD + U_ARGNS_COL</span></p>
-        <ul class="option-list">
-          <li>Cada combinación Modelo+Color es un producto Shopify independiente.</li>
-          <li>Opción de variante expuesta: <strong>Talla únicamente</strong>.</li>
-          <li>Resolución de imágenes S3 por prefijo <span class="mono">Modelo+Color</span>.</li>
-          <li>Sin dependencia de tablas maestras adicionales en SAP.</li>
-        </ul>
-        <div class="option-tradeoff">
-          <strong>Limitación funcional:</strong> "Navy" y "Blanco" del mismo modelo aparecen como fichas de producto separadas en el storefront, no como variantes de color dentro de una sola ficha.
-        </div>
-        <div class="option-footer">
-          <span class="option-footer-label">Esfuerzo de implementación</span>
-          <span class="option-footer-value">34 horas / 5 días hábiles</span>
-        </div>
-      </button>
-
-      <button type="button" class="option-card option-b" data-option="b">
-        <div class="option-card-head">
-          <span class="option-label">Opción B</span>
-          <span class="option-select-badge">✓ Seleccionada</span>
+          <span class="option-label">Alcance de esta propuesta</span>
         </div>
         <h3>Color como variante de Shopify</h3>
         <p class="option-spec"><span class="mono">Clave de agrupación = U_ARGNS_MOD (Modelo únicamente)</span></p>
@@ -170,47 +148,44 @@
           <li>Resolución de imágenes S3 por prefijo de solo <span class="mono">Modelo</span>.</li>
           <li>Requiere lookup en vivo contra UDT de colores existente en SAP (campo código→nombre comercial, ej. <span class="mono">730 → Navy</span>), ejecutado dentro del Proceso&nbsp;2.</li>
           <li>Degradación definida: si el código no tiene traducción en la UDT, la variante se sincroniza sin Color como opción visible.</li>
-          <li>Incluye migración de productos ya creados bajo el esquema de la Opción A.</li>
+          <li>Incluye migración de los productos ya creados bajo el esquema actual (cada Modelo+Color como ficha separada).</li>
         </ul>
         <div class="option-tradeoff option-tradeoff-good">
-          <strong>Ventaja funcional:</strong> experiencia de compra estándar de eCommerce — selector de color y talla dentro de una sola ficha de producto.
+          <strong>Ventaja funcional:</strong> experiencia de compra estándar de eCommerce — selector de color y talla dentro de una sola ficha de producto, en vez de fichas separadas por cada color.
         </div>
         <div class="option-footer">
           <span class="option-footer-label">Esfuerzo de implementación</span>
-          <span class="option-footer-value">51 horas / ~11 días hábiles</span>
+          <span class="option-footer-value">64 horas / equipo de 2 recursos</span>
         </div>
-      </button>
+      </div>
     </div>
   </section>
 
   <!-- CRONOGRAMA -->
   <section class="section" id="cronograma">
     <p class="section-num">04</p>
-    <h2>Cronograma por opción</h2>
+    <h2>Cronograma</h2>
+    <p class="lead">
+      5 días calendario, con 2 recursos trabajando en paralelo — entrega el sábado.
+    </p>
 
-    <div class="gantt-block" data-option-block="a">
-      <h4 class="gantt-block-title gantt-title-a">Opción A — 5 días hábiles</h4>
+    <div class="gantt-block">
+      <h4 class="gantt-block-title gantt-title-b">23 al 27 de junio · 2026</h4>
       <div class="gantt-static">
-        <div class="gantt-static-row"><span class="gantt-static-label">SAP B1</span><span class="gantt-static-task">UDF Descripción Padre</span><div class="gantt-static-track"><div class="gantt-static-bar bar-a" style="left:0%;width:20%;"></div></div></div>
-        <div class="gantt-static-row"><span class="gantt-static-label">Addon</span><span class="gantt-static-task">Agrupación Modelo+Color</span><div class="gantt-static-track"><div class="gantt-static-bar bar-a" style="left:0%;width:40%;"></div></div></div>
-        <div class="gantt-static-row"><span class="gantt-static-label">Addon</span><span class="gantt-static-task">Proceso 1 · padre+variantes</span><div class="gantt-static-track"><div class="gantt-static-bar bar-a" style="left:20%;width:40%;"></div></div></div>
-        <div class="gantt-static-row"><span class="gantt-static-label">Addon</span><span class="gantt-static-task">Proceso 3 · imágenes S3</span><div class="gantt-static-track"><div class="gantt-static-bar bar-a" style="left:40%;width:40%;"></div></div></div>
-        <div class="gantt-static-row"><span class="gantt-static-label">QA</span><span class="gantt-static-task">Pruebas E2E</span><div class="gantt-static-track"><div class="gantt-static-bar bar-a" style="left:80%;width:20%;"></div></div></div>
+        <div class="gantt-static-row"><span class="gantt-static-label">Analista</span><span class="gantt-static-task">Análisis funcional y especificación (12h)</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:0%;width:40%;"></div></div></div>
+        <div class="gantt-static-row"><span class="gantt-static-label">SAP B1</span><span class="gantt-static-task">UDF Descripción Padre + validar UDT colores</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:0%;width:20%;"></div></div></div>
+        <div class="gantt-static-row"><span class="gantt-static-label">Addon</span><span class="gantt-static-task">Rediseño de agrupación (clave = Modelo)</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:20%;width:30%;"></div></div></div>
+        <div class="gantt-static-row"><span class="gantt-static-label">Addon</span><span class="gantt-static-task">Proceso 2 · lookup en vivo UDT colores</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:40%;width:20%;"></div></div></div>
+        <div class="gantt-static-row"><span class="gantt-static-label">Addon</span><span class="gantt-static-task">Proceso 1 · padre con 2 niveles de variante</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:40%;width:30%;"></div></div></div>
+        <div class="gantt-static-row"><span class="gantt-static-label">Addon</span><span class="gantt-static-task">Proceso 3 · imágenes S3 por Modelo</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:60%;width:20%;"></div></div></div>
+        <div class="gantt-static-row"><span class="gantt-static-label">Addon</span><span class="gantt-static-task">Migración de productos existentes</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:70%;width:15%;"></div></div></div>
+        <div class="gantt-static-row"><span class="gantt-static-label">QA</span><span class="gantt-static-task">Pruebas de extremo a extremo</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:80%;width:20%;"></div></div></div>
       </div>
     </div>
 
-    <div class="gantt-block" data-option-block="b">
-      <h4 class="gantt-block-title gantt-title-b">Opción B — 11 días hábiles</h4>
-      <div class="gantt-static">
-        <div class="gantt-static-row"><span class="gantt-static-label">SAP B1</span><span class="gantt-static-task">UDF Descripción Padre</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:0%;width:18%;"></div></div></div>
-        <div class="gantt-static-row"><span class="gantt-static-label">SAP B1</span><span class="gantt-static-task">Validar UDT colores</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:0%;width:9%;"></div></div></div>
-        <div class="gantt-static-row"><span class="gantt-static-label">Addon</span><span class="gantt-static-task">Rediseño agrupación</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:0%;width:27%;"></div></div></div>
-        <div class="gantt-static-row"><span class="gantt-static-label">Addon</span><span class="gantt-static-task">Lookup UDT colores</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:9%;width:18%;"></div></div></div>
-        <div class="gantt-static-row"><span class="gantt-static-label">Addon</span><span class="gantt-static-task">Proceso 1 · 2 niveles variante</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:18%;width:27%;"></div></div></div>
-        <div class="gantt-static-row"><span class="gantt-static-label">Addon</span><span class="gantt-static-task">Proceso 3 · imágenes por Modelo</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:45%;width:18%;"></div></div></div>
-        <div class="gantt-static-row"><span class="gantt-static-label">Addon</span><span class="gantt-static-task">Migración esquema anterior</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:63%;width:18%;"></div></div></div>
-        <div class="gantt-static-row"><span class="gantt-static-label">QA</span><span class="gantt-static-task">Pruebas E2E</span><div class="gantt-static-track"><div class="gantt-static-bar bar-b" style="left:81%;width:19%;"></div></div></div>
-      </div>
+    <div class="callout callout-info" style="margin-top:24px;">
+      <span class="callout-icon">i</span>
+      <p><strong>2 recursos en paralelo:</strong> Jefree Gómez (desarrollo del addon, Procesos 1-3) y Gilberto Salguero (arquitectura de integración Shopify y resolución S3) trabajan simultáneamente sobre distintos procesos, lo que permite comprimir 64 horas de trabajo en 5 días calendario en vez de ejecutarlas de forma secuencial.</p>
     </div>
   </section>
 
@@ -241,43 +216,27 @@
   <section class="section" id="inversion">
     <p class="section-num">06</p>
     <h2>Inversión</h2>
+    <p class="lead">Precio fijo por el proyecto completo — sin cuota mensual recurrente.</p>
 
     <div class="invest-grid">
-      <div class="invest-card invest-card-recurring">
-        <span class="invest-tag">Recurrencia mensual</span>
-        <p class="invest-amount">$90<span class="invest-unit">/mes</span></p>
-        <p class="invest-desc">Mantenimiento operativo del addon — monitoreo de sincronización SAP↔Shopify. No incluye mejoras de alcance; toda personalización se cotiza por separado.</p>
-      </div>
-
-      <div class="invest-card invest-card-a" data-option-block="a">
-        <span class="invest-tag invest-tag-a">Implementación — Opción A</span>
+      <div class="invest-card invest-card-b">
+        <span class="invest-tag invest-tag-b">Implementación — pago único</span>
         <table class="invest-table">
-          <tr><td>Análisis y diseño</td><td class="status status-done">✓ Hecho</td><td class="num">4h</td><td class="num">$120</td></tr>
-          <tr><td>Integración SAP B1 (Service Layer)</td><td class="status status-done">✓ Hecho</td><td class="num">10h</td><td class="num">$300</td></tr>
-          <tr><td>Resolución de imágenes S3</td><td class="status status-done">✓ Hecho</td><td class="num">5h</td><td class="num">$150</td></tr>
-          <tr><td>Estructura padre/variante (color en padre)</td><td class="status status-pending">Pendiente</td><td class="num">15h</td><td class="num">$450</td></tr>
-          <tr class="total-row"><td>Total</td><td></td><td class="num">34h</td><td class="num">$1,020</td></tr>
+          <tr><td>Análisis funcional y especificación</td><td class="num">12h</td><td class="num">$300</td></tr>
+          <tr><td>Desarrollo (Procesos 1-3, lookup de color, migración)</td><td class="num">52h</td><td class="num">$1,300</td></tr>
+          <tr class="total-row"><td>Total</td><td class="num">64h</td><td class="num">$1,600</td></tr>
         </table>
-        <p class="invest-progress">19h ya ejecutadas ($570) · 15h pendientes ($450)</p>
-      </div>
-
-      <div class="invest-card invest-card-b" data-option-block="b">
-        <span class="invest-tag invest-tag-b">Implementación — Opción B</span>
-        <table class="invest-table">
-          <tr><td>Análisis y diseño</td><td class="status status-done">✓ Hecho</td><td class="num">4h</td><td class="num">$120</td></tr>
-          <tr><td>Integración SAP B1 (Service Layer)</td><td class="status status-done">✓ Hecho</td><td class="num">10h</td><td class="num">$300</td></tr>
-          <tr><td>Resolución de imágenes S3 (base)</td><td class="status status-done">✓ Hecho</td><td class="num">5h</td><td class="num">$150</td></tr>
-          <tr><td>Estructura padre/variante + lookup color</td><td class="status status-pending">Pendiente</td><td class="num">28h</td><td class="num">$840</td></tr>
-          <tr><td>Migración de productos existentes</td><td class="status status-pending">Pendiente</td><td class="num">4h</td><td class="num">$120</td></tr>
-          <tr class="total-row"><td>Total</td><td></td><td class="num">51h</td><td class="num">$1,530</td></tr>
-        </table>
-        <p class="invest-progress">19h ya ejecutadas ($570) · 32h pendientes ($960)</p>
       </div>
     </div>
 
     <div class="rate-note">
       <span class="rate-note-icon">$</span>
-      <p>Tarifa aplicada: <strong>$30/hora</strong>. Tarifa preferencial sobre el estándar de Kenocia ($35/hora), vigente para Lumo por el volumen acumulado de proyectos en conjunto.</p>
+      <p>Tarifa aplicada para esta implementación: <strong>$25/hora</strong> — descuento sobre la tarifa estándar de Kenocia ($30-35/hora) por dos razones: (1) el proyecto se cubre con un pago fijo único, sin recurrencia mensual que administrar, y (2) se asignan 2 recursos en paralelo (Jefree Gómez y Gilberto Salguero), lo que permite comprimir el calendario a 5 días con entrega el sábado.</p>
+    </div>
+
+    <div class="callout callout-warning" style="margin-top:20px;">
+      <span class="callout-icon">!</span>
+      <p><strong>Soporte y mantenimiento posteriores a la entrega:</strong> cualquier incidente, ajuste o mantenimiento solicitado después de la puesta en producción se cotiza por separado a <strong>$35/hora</strong> — tarifa de soporte, distinta de la tarifa de desarrollo de este proyecto. No hay cuota mensual fija; el soporte se factura únicamente cuando se solicita.</p>
     </div>
   </section>
 
@@ -288,8 +247,10 @@
     <ul class="terms-list">
       <li>Vigencia de esta cotización: 30 días naturales a partir de la fecha de emisión.</li>
       <li>El esfuerzo en horas es estimado sobre el alcance descrito; cualquier requerimiento adicional no contemplado aquí se cotiza por separado.</li>
-      <li>La recurrencia mensual inicia una vez el addon esté en producción, independientemente de la opción elegida.</li>
-      <li>Pendientes técnicos abiertos (ver documento de análisis funcional) deben resolverse con Van Heusen antes del inicio de desarrollo, sin impacto en el cronograma cotizado si se resuelven dentro de los primeros 2 días hábiles.</li>
+      <li>Entrega comprometida: sábado 27 de junio de 2026, con 2 recursos trabajando en paralelo sobre el cronograma de la sección 04.</li>
+      <li>Esta cotización corresponde a un pago único por la implementación completa. No incluye una cuota mensual recurrente.</li>
+      <li>Soporte y mantenimiento posteriores a la puesta en producción se facturan a $35/hora, únicamente cuando se solicitan.</li>
+      <li>Pendientes técnicos abiertos (ver documento de análisis funcional) deben resolverse con Van Heusen antes del inicio de desarrollo, sin impacto en el cronograma cotizado si se resuelven dentro del primer día.</li>
     </ul>
   </section>
 
@@ -302,6 +263,5 @@
   </div>
 </footer>
 
-<script src="script.js"></script>
 </body>
 </html>

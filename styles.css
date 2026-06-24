@@ -228,7 +228,6 @@ main { position: relative; z-index: 1; }
   text-align: left;
   font-family: inherit;
   color: var(--text-hi);
-  cursor: pointer;
   border-radius: var(--radius); padding: 28px 24px;
   background: var(--bg-panel); border: 1px solid var(--line);
   transition: opacity 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
@@ -403,6 +402,21 @@ main { position: relative; z-index: 1; }
   display: flex; align-items: center; justify-content: center;
 }
 .rate-note p { margin: 0; font-size: 13.5px; color: var(--text-hi); }
+
+.callout {
+  display: flex; gap: 14px; align-items: flex-start;
+  border-radius: var(--radius); padding: 16px 18px; border: 1px solid;
+}
+.callout-info { background: var(--a-glow); border-color: var(--a-dim); }
+.callout-warning { background: var(--b-glow); border-color: var(--b-dim); }
+.callout-icon {
+  flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
+  font-family: var(--font-mono); font-weight: 700; font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+}
+.callout-info .callout-icon { background: var(--a-color); color: #07221D; }
+.callout-warning .callout-icon { background: var(--b-color); color: #1A1305; }
+.callout p { margin: 0; font-size: 13.5px; color: var(--text-hi); }
 
 /* ============================================================
    Terms

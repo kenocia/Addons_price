@@ -1,64 +1,45 @@
 # Keno-Shopy — Propuesta Técnica (GitHub Pages)
 
-Repositorio independiente del sitio de análisis. Contiene la propuesta técnica y comercial dirigida a Amado Rodriguez (Lumo), con dos opciones de arquitectura interactivas (Opción A / Opción B) y descarga directa del PDF correspondiente.
+Repositorio independiente del sitio de análisis. Contiene la propuesta técnica y comercial definitiva dirigida a Amado Rodriguez (Lumo) — alcance único (color y talla como variantes reales en Shopify), con descarga directa del PDF.
 
 ## Archivos
 
-- `index.html` — sitio web interactivo de la propuesta. Las tarjetas "Opción A" / "Opción B" controlan el resto de la página: Gantt, tabla de inversión y el PDF que se descarga.
-- `styles.css` — diseño del sitio web (incluye `@font-face` para las fuentes locales — no depende de Google Fonts)
-- `print.css` — ajustes de paginación usados solo para generar los PDFs (no se carga en el sitio web público)
-- `script.js` — controla qué opción está seleccionada y actualiza el Gantt, la inversión y el botón de descarga
+- `index.html` — sitio web de la propuesta (estático, sin JavaScript — ya no hay selección de opciones que interactuar)
+- `styles.css` — diseño del sitio (incluye `@font-face` para las fuentes locales — no depende de Google Fonts)
+- `print.css` — ajustes de paginación usados solo para generar el PDF (no se carga en el sitio web público)
 - `SpaceGrotesk.ttf`, `IBMPlexSans.ttf`, `IBMPlexMono-*.ttf` — fuentes embebidas, deben estar en la misma carpeta que `index.html` y `styles.css` (raíz del repo)
-- `Keno-Shopy-Propuesta-Tecnica-OpcionA.pdf` — versión descargable enfocada solo en la Opción A (color dentro del padre)
-- `Keno-Shopy-Propuesta-Tecnica-OpcionB.pdf` — versión descargable enfocada solo en la Opción B (color como variante)
+- `Keno-Shopy-Propuesta-Tecnica.pdf` — versión descargable, generada a partir del mismo HTML/CSS
 
-## Cómo funciona la interactividad
+## Modelo comercial de esta versión
 
-Al cargar, el sitio muestra la Opción A seleccionada por defecto. Al hacer clic en cualquiera de las dos tarjetas de la sección "Decisión de arquitectura":
-
-- La tarjeta elegida se resalta (borde de color + badge "✓ Seleccionada"); la otra se atenúa.
-- El bloque de Cronograma muestra solo el Gantt de la opción elegida.
-- El bloque de Inversión muestra solo la tabla de horas/costos de la opción elegida.
-- El botón "Descargar PDF" del encabezado cambia su destino y etiqueta para apuntar al PDF de la opción activa.
+- **Pago único de $1,600** (64 horas a $25/hora: 12h de análisis + 52h de desarrollo) — sin cuota mensual recurrente.
+- **Tarifa de desarrollo:** $25/hora — descuento sobre la tarifa estándar de Kenocia ($30-35/hora) por dos razones: pago fijo único sin recurrencia que administrar, y 2 recursos (Jefree Gómez, Gilberto Salguero) trabajando en paralelo.
+- **Soporte y mantenimiento posteriores a la entrega:** $35/hora, facturado solo cuando se solicita — no hay cuota fija.
+- **Entrega comprometida:** sábado 27 de junio de 2026.
 
 ## Publicar en GitHub Pages
 
-1. Sube **todo el contenido de esta carpeta tal cual está** (incluyendo todos los archivos `.ttf` y ambos PDFs) a un repositorio nuevo, todos en la misma carpeta raíz.
-2. En GitHub: **Settings → Pages → Source** → selecciona la rama (`main`) y la carpeta `/ (root)`.
-3. La URL pública queda como `https://<usuario-u-org>.github.io/<repo>/`.
+1. Sube todo el contenido de esta carpeta (incluyendo los `.ttf` y el PDF) a un repositorio nuevo, todos en la raíz.
+2. **Settings → Pages → Source** → rama `main`, carpeta `/ (root)`.
+3. URL pública: `https://<usuario-u-org>.github.io/<repo>/`.
 
-## Regenerar los PDFs si cambia el contenido
-
-Si editas `index.html` o `styles.css`, los PDFs no se actualizan solos. Desde un entorno con Python y weasyprint instalado:
+## Regenerar el PDF si cambia el contenido
 
 ```bash
 pip install weasyprint
 
 python3 -c "
 import re
-
-def make_print_version(option):
-    html = open('index.html').read()
-    html = re.sub(r'<header class=\"topbar\">.*?</header>', '', html, flags=re.DOTALL)
-    html = html.replace('<html lang=\"es\">', f'<html lang=\"es\" data-option=\"{option}\">')
-    html = html.replace('<link rel=\"stylesheet\" href=\"styles.css\">', '<link rel=\"stylesheet\" href=\"styles.css\"><link rel=\"stylesheet\" href=\"print.css\">')
-    html = re.sub(r'<script src=\"script.js\"></script>', '', html)
-    # Los <button> de opción se reemplazan por <div> — weasyprint pierde contenido
-    # dentro de <button> al combinarlo con saltos de página forzados.
-    html = re.sub(r'<button type=\"button\" class=\"option-card([^\"]*)\" data-option=\"(a|b)\">', r'<div class=\"option-card\1\" data-option=\"\2\">', html)
-    return html.replace('</button>', '</div>')
-
-open('print-a.html', 'w').write(make_print_version('a'))
-open('print-b.html', 'w').write(make_print_version('b'))
+html = open('index.html').read()
+html = re.sub(r'<header class=\"topbar\">.*?</header>', '', html, flags=re.DOTALL)
+html = html.replace('<link rel=\"stylesheet\" href=\"styles.css\">', '<link rel=\"stylesheet\" href=\"styles.css\"><link rel=\"stylesheet\" href=\"print.css\">')
+open('print.html', 'w').write(html)
 "
 
 python3 -c "
 import weasyprint
-weasyprint.HTML('print-a.html').write_pdf('Keno-Shopy-Propuesta-Tecnica-OpcionA.pdf')
-weasyprint.HTML('print-b.html').write_pdf('Keno-Shopy-Propuesta-Tecnica-OpcionB.pdf')
+weasyprint.HTML('print.html').write_pdf('Keno-Shopy-Propuesta-Tecnica.pdf')
 "
 ```
 
-`print-a.html` y `print-b.html` son archivos intermedios — no hace falta subirlos a GitHub Pages, solo usarlos localmente para regenerar los PDFs.
-
-**Nota importante:** en la versión imprimible, las tarjetas de opción se reemplazan de `<button>` a `<div>` antes de generar el PDF. Esto es necesario porque weasyprint pierde contenido dentro de elementos `<button>` cuando se combinan con reglas de salto de página — si se omite este paso, la tarjeta de la opción seleccionada aparece vacía en el PDF.
+`print.html` es un archivo intermedio — no hace falta subirlo a GitHub Pages, solo usarlo localmente para regenerar el PDF.
